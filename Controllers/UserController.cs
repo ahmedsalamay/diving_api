@@ -1,7 +1,9 @@
 ﻿using diving_api.Model;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Linq;
+using System.Threading.Tasks;
+
 namespace diving_api.Controllers
 {
     [ApiController]
@@ -20,10 +22,11 @@ namespace diving_api.Controllers
         }
 
         [HttpGet("{code}")]
-        public User Get(int code)
+        public async Task<ActionResult<User>> Get(int code)
         {
-            var c = context.ro01.FirstOrDefault((u) => u.rcode == code);
-            return c;
+            var user = await context.ro01.FirstOrDefaultAsync((u) => u.rcode == code);
+            if (user == null) return  BadRequest();
+            else return Ok(user);
         }
     }
 }
